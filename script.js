@@ -13,7 +13,7 @@ function buildForm() {
   const $form = $('<form id="regForm" class="space-y-4"></form>');
 
   config.fields.forEach(f => {
-    const label = `<label class="block mb-1">${f.label}${f.required ? "*" : ""}</label>`;
+    const label = `<label class="block mb-1 font-medium">${f.label}${f.required ? "*" : ""}</label>`;
     let input;
 
     if (f.type === "select") {
@@ -36,7 +36,7 @@ function buildForm() {
     $form.append($('<div>').append(label).append(input));
   });
 
-  $form.append('<button class="bg-blue-600 text-white px-4 py-2 rounded" type="submit">Submit</button>');
+  $form.append('<button class="bg-blue-600 text-white px-4 py-2 rounded w-full" type="submit">Register</button>');
   $("#dynamicFormContainer").html($form);
 
   // Initialize plugins
@@ -44,7 +44,7 @@ function buildForm() {
   $("#dob").flatpickr({ dateFormat: "Y-m-d" });
   if (document.querySelector("#skills")) new Tagify(document.querySelector("#skills"));
 
-  // ✅ Attach submit handler
+  // Attach submit handler
   $form.on("submit", function (e) {
     e.preventDefault();
     handleRegister(config.fields);
@@ -55,7 +55,7 @@ function buildForm() {
 function handleRegister(fields) {
   try {
     let students = safeParse(localStorage.getItem("students"), []);
-    if (!Array.isArray(students)) students = []; // fix
+    if (!Array.isArray(students)) students = [];
 
     let student = {};
     let valid = true;
@@ -86,28 +86,34 @@ function handleRegister(fields) {
     students.push(student);
     localStorage.setItem("students", JSON.stringify(students));
 
-    alert("Registration successful ✅");
-    window.location.href = "dashboard.html";
+    alert("✅ Registration successful! Please login with your email and password.");
+    window.location.href = "login.html";
   } catch (err) {
-    console.error("Error in handleRegister", err);
     alert("Something went wrong during registration!");
+    console.error(err);
   }
 }
 
 // -------- Login ----------
 function handleLogin(email, password) {
   try {
-    const users = safeParse(localStorage.getItem("users"), []);
-    const match = users.find(u => u.email === email && u.password === password);
+    const students = safeParse(localStorage.getItem("students"), []);
+    if (!Array.isArray(students) || students.length === 0) {
+      alert("No registered users found. Please register first.");
+      return;
+    }
+
+    const match = students.find(u => u.email === email && u.password === password);
     if (match) {
       localStorage.setItem("loggedIn", email);
+      alert("✅ Login successful!");
       window.location.href = "dashboard.html";
     } else {
-      alert("Invalid credentials!");
+      alert("❌ Invalid email or password. Try again!");
     }
   } catch (err) {
-    console.error(err);
     alert("Login error!");
+    console.error(err);
   }
 }
 
@@ -137,8 +143,8 @@ function renderDashboard() {
 
     renderCharts(students);
   } catch (err) {
-    console.error(err);
     alert("Error loading dashboard!");
+    console.error(err);
   }
 }
 
@@ -162,12 +168,12 @@ function renderCharts(students) {
 
   window.pieInstance = new Chart(ctx1, {
     type: "pie",
-    data: { labels, datasets: [{ data }] }
+    data: { labels, datasets: [{ data, backgroundColor: ["#60a5fa", "#f87171", "#34d399", "#fbbf24", "#a78bfa"] }] }
   });
 
   window.barInstance = new Chart(ctx2, {
     type: "bar",
-    data: { labels, datasets: [{ label: "Students per Course", data }] }
+    data: { labels, datasets: [{ label: "Students per Course", data, backgroundColor: "#60a5fa" }] }
   });
 }
 
@@ -180,7 +186,7 @@ function deleteStudent(i) {
 }
 
 function editStudent(i) {
-  alert("Edit feature not fully implemented yet.");
+  alert("✏️ Edit feature not fully implemented yet.");
 }
 
 // -------- On Page Load ----------
@@ -196,7 +202,6 @@ $(function () {
       e.preventDefault();
       handleLogin($("#email").val(), $("#password").val());
     });
-
     $("#registerBtn").on("click", () => window.location.href = "register.html");
   }
 
