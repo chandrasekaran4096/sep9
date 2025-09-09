@@ -47,13 +47,8 @@ function buildForm(){
 
   // plugins
   $(".select2").select2({width:"100%"});
-  $("input[type=text][id=dob]").flatpickr({dateFormat:"Y-m-d"});
-  $("input[id=skills]").each(function(){ new Tagify(this); });
-
-  $("#regForm").on("submit",function(e){
-    e.preventDefault();
-    handleRegister(config.fields);
-  });
+  $("#dob").flatpickr({dateFormat:"Y-m-d"});
+  if(document.querySelector("#skills")) new Tagify(document.querySelector("#skills"));
 }
 
 // Register handler
@@ -65,7 +60,7 @@ function handleRegister(fields){
     if(f.type==="multiselect") val=$("#"+f.id).val()||[];
     if(f.type==="tags"){
       const el=document.querySelector("#"+f.id);
-      val=el._tagify.value.map(t=>t.value);
+      if(el && el._tagify) val=el._tagify.value.map(t=>t.value);
     }
     const err=validateField(f,val);
     if(err) errors.push(err);
@@ -77,8 +72,12 @@ function handleRegister(fields){
   const users=getUsers();
   users.push(data);
   saveUsers(users);
+
+  // save login credentials
   localStorage.setItem("login_cred_"+data.email, JSON.stringify({email:data.email,password:data.password}));
   setAuth(data.email);
+
+  alert("Registration successful! Redirecting to Dashboard...");
   window.location="dashboard.html";
 }
 
@@ -112,17 +111,26 @@ function buildDashboard(){
   const courseCounts={};
   users.forEach(u=>{ if(u.course) courseCounts[u.course]=(courseCounts[u.course]||0)+1; });
   if(window.pieChart) window.pieChart.destroy();
-  window.pieChart=new Chart($("#pieChart"),{type:"pie",data:{labels:Object.keys(courseCounts),datasets:[{data:Object.values(courseCounts)}]}});
+  window.pieChart=new Chart($("#pieChart"),{
+    type:"pie",
+    data:{labels:Object.keys(courseCounts),datasets:[{data:Object.values(courseCounts)}]}
+  });
   
   const monthCounts=Array(12).fill(0);
   users.forEach(u=>{ if(u.createdAt){monthCounts[new Date(u.createdAt).getMonth()]++;} });
   if(window.barChart) window.barChart.destroy();
-  window.barChart=new Chart($("#barChart"),{type:"bar",data:{labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],datasets:[{data:monthCounts}]}})
+  window.barChart=new Chart($("#barChart"),{
+    type:"bar",
+    data:{labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+      datasets:[{label:"Registrations",data:monthCounts,backgroundColor:"rgba(54,162,235,0.6)"}]}
+  });
 }
 
 // Page detection
 $(function(){
   const page=location.pathname.split("/").pop();
+
+  // ===== LOGIN PAGE =====
   if(page==="login.html"){
     $("#loginForm").on("submit",function(e){
       e.preventDefault();
@@ -134,7 +142,19 @@ $(function(){
       setAuth(email); window.location="dashboard.html";
     });
   }
-  if(page==="register.html"){ buildForm(); }
+
+  // ===== REGISTER PAGE =====
+  if(page==="register.html"){ 
+    buildForm();
+    // attach submit after form build
+    $(document).on("submit", "#regForm", function(e){
+      e.preventDefault();
+      const config = safeParse($("#formConfig").html(), {fields:[]});
+      handleRegister(config.fields);
+    });
+  }
+
+  // ===== DASHBOARD PAGE =====
   if(page==="dashboard.html"){
     if(!getAuth()){ window.location="login.html"; return; }
     $("#logoutBtn").on("click",()=>{ clearAuth(); window.location="login.html"; });
