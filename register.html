@@ -1,1 +1,44 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <!-- Plugins -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow">
+    <h2 class="text-2xl font-bold mb-6">New Registration</h2>
+    <div id="dynamicFormContainer"></div>
+  </div>
+
+  <!-- Form Config JSON -->
+  <script id="formConfig" type="application/json">
+  {
+    "fields": [
+      {"label":"Full Name","type":"text","id":"name","required":true},
+      {"label":"Email","type":"email","id":"email","required":true},
+      {"label":"Password","type":"password","id":"password","required":true},
+      {"label":"Mobile","type":"tel","id":"mobile","required":true,"pattern":"^\\d{10}$"},
+      {"label":"Gender","type":"select","id":"gender","options":["Male","Female","Other"],"required":true},
+      {"label":"DOB","type":"date","id":"dob","required":true},
+      {"label":"Course","type":"select","id":"course","options":["BSc","BCom","BA","BTech","MSc","MCom","MTech"],"required":true},
+      {"label":"Skills","type":"tags","id":"skills"},
+      {"label":"Hobbies","type":"multiselect","id":"hobbies","options":["Reading","Sports","Music","Travel","Coding"]},
+      {"label":"Address","type":"textarea","id":"address"}
+    ]
+  }
+  </script>
+
+  <script src="script.js"></script>
+</body>
+</html>
