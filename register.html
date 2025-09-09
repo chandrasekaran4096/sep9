@@ -1,50 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Register</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  
-  <!-- Select2 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-  <!-- Flatpickr -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-  <!-- Tagify -->
-  <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
-
-  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
 </head>
-<body class="bg-gray-100 min-h-screen">
-  <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow">
-    <h2 class="text-2xl font-bold mb-6">New Registration</h2>
-    <!-- Dynamic form will render here -->
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+  <div class="bg-white p-6 rounded shadow w-full max-w-lg">
+    <h1 class="text-2xl font-bold mb-4">Student Registration</h1>
     <div id="dynamicFormContainer"></div>
+    <!-- Form config -->
+    <script id="formConfig" type="application/json">
+    {
+      "fields": [
+        { "label": "Full Name", "type": "text", "id": "name", "required": true },
+        { "label": "Email", "type": "email", "id": "email", "required": true },
+        { "label": "Password", "type": "password", "id": "password", "required": true },
+        { "label": "Gender", "type": "select", "id": "gender", "required": true,
+          "options": ["Male", "Female", "Other"] },
+        { "label": "Course", "type": "select", "id": "course", "required": true,
+          "options": ["BSc", "MSc", "BCom", "MBA"] },
+        { "label": "Date of Birth", "type": "date", "id": "dob", "required": false },
+        { "label": "Skills", "type": "tags", "id": "skills", "required": false },
+        { "label": "Address", "type": "textarea", "id": "address", "required": false }
+      ]
+    }
+    </script>
   </div>
 
-  <!-- Form Config JSON -->
-  <script id="formConfig" type="application/json">
-  {
-    "fields": [
-      {"label":"Full Name","type":"text","id":"name","required":true},
-      {"label":"Email","type":"email","id":"email","required":true},
-      {"label":"Password","type":"password","id":"password","required":true},
-      {"label":"Mobile","type":"tel","id":"mobile","required":true,"pattern":"^\\d{10}$"},
-      {"label":"Gender","type":"select","id":"gender","options":["Male","Female","Other"],"required":true},
-      {"label":"DOB","type":"date","id":"dob","required":true},
-      {"label":"Course","type":"select","id":"course","options":["BSc","BCom","BA","BTech","MSc","MCom","MTech"],"required":true},
-      {"label":"Skills","type":"tags","id":"skills"},
-      {"label":"Hobbies","type":"multiselect","id":"hobbies","options":["Reading","Sports","Music","Travel","Coding"]},
-      {"label":"Address","type":"textarea","id":"address"}
-    ]
-  }
-  </script>
-
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
   <script src="script.js"></script>
 </body>
 </html>
